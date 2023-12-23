@@ -212,7 +212,7 @@ function buildItemExt(itemName, items, citiesStr){
             </div>
 
             <div id="iframe_div" style="width: 500px;height: 600px;">
-                <iframe style="display: block;width:100%;height: 100%;" src="http://127.0.0.1:8080/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}"></iframe>
+                <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}"></iframe>
             </div>
         </div>`;
     headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
