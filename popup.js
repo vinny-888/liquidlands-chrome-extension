@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     toggle.addEventListener("click", function() {
         toggleUI();
     });
+    let citiesSave = document.getElementById('citiesSave');
+    citiesSave.addEventListener("click", function() {
+        saveCities();
+    });
+    
     chrome.storage.local.get(['enabled'], function(res) {
         if(res.enabled){
             toggle.value = 'Disable';
@@ -10,7 +15,23 @@ document.addEventListener('DOMContentLoaded', function () {
             toggle.value = 'Enable';
         }
     });
+
+    chrome.storage.local.get(['cities'], function(res) {
+        if(res.cities){
+            document.getElementById('cities').value = res.cities.join(',');
+        } else {
+            document.getElementById('cities').value = '';
+        }
+    });
 });
+
+function saveCities(){
+    let cities = document.getElementById('cities').value;
+    cities = cities.split(',');
+    chrome.runtime.sendMessage({action: "saveCities", cities: cities}, function(response) {
+        console.log("saveCities complete");
+    });
+}
 
 function toggleUI(){
     let toggle = document.getElementById('toggle').value;

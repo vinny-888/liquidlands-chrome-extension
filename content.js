@@ -1,21 +1,27 @@
 let myItems = [];
 let selectedItem = '';
+let cities = [];
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get("enabled",function(res) {
-        if(res.enabled){
-            chrome.storage.local.get("selectedItem",function(res) {
-                selectedItem = res.selectedItem;
-                console.log('selectedItem:', selectedItem);
-                if(res){
-                    let offset = 10;
-                    if(window.location.href.indexOf('blueprints') == -1){
-                        offset = 60;
-                    } else {
-                        if(window.location.href.indexOf('blueprints') != -1){
-                            recheck();
+    chrome.storage.local.get("enabled",function(res1) {
+        if(res1.enabled){
+            chrome.storage.local.get("cities",function(res2) {
+                if(res2.cities){
+                    cities = res2.cities;
+                }
+                chrome.storage.local.get("selectedItem",function(res3) {
+                    selectedItem = res3.selectedItem;
+                    console.log('selectedItem:', selectedItem);
+                    if(res3){
+                        let offset = 10;
+                        if(window.location.href.indexOf('blueprints') == -1){
+                            offset = 60;
+                        } else {
+                            if(window.location.href.indexOf('blueprints') != -1){
+                                recheck();
+                            }
                         }
                     }
-                }
+                });
             });
             injectScript(chrome.runtime.getURL('injectedScript.js'), 'body');
 
@@ -37,8 +43,9 @@ function getItems(version){
         } else {
             console.log('Response from background:', response);
             myItems = response.items;
-
-            buildItem(selectedItem, myItems);
+            if(selectedItem){
+                buildItem(selectedItem, myItems);
+            }
         }
         // console.log(response.reply);
     });
@@ -83,6 +90,11 @@ chrome.runtime.onMessage.addListener((request) => {
         close();
     } else if(request.action == 'myItems'){
         console.log('items: ', request.items);
+    } else if(request.action == 'saveCities'){
+        console.log('saveCities: ', request.cities);
+        chrome.storage.local.set({ cities: request.cities }, function() {
+            console.log('Cities set');
+        });
     }
 
 });
@@ -169,7 +181,7 @@ function buildItem(itemName, items){
         headups = document.createElement("div"); 
     }
     headups.id = 'headsup';
-
+    let citiesStr = cities ? cities.join(',') : '';
     headups.innerHTML = `
         <div style="background-color:white;z-index:1000;padding:0px;border: 1px solid #fff;">
             <div style="background-color: #1f2932;width: 100%;height: 24px;padding:4px;">
@@ -182,7 +194,7 @@ function buildItem(itemName, items){
             </div>
 
             <div id="iframe_div" style="width: 500px;height: 600px;">
-                <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=7605,7017&items=${paramStr}"></iframe>
+                <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${paramStr}"></iframe>
             </div>
         </div>`;
     headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;

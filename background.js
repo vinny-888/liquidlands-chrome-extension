@@ -19,6 +19,10 @@ chrome.runtime.onMessage.addListener(
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {action: request.action});
         });
+      } else if (request.action === "saveCities"){
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {action: request.action, cities: request.cities});
+        });
       }
       return true; // Return true to indicate you wish to send a response asynchronously
   }
