@@ -33,7 +33,7 @@ function buildItemExt(itemName, items, citiesStr){
                     X
                 </div>
             </div>
-            <div id="iframe_div" style="width: 500px;height: 600px;">
+            <div id="iframe_div" style="width: 520px;height: 600px;">
             <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&items=${items}&cities=${citiesStr}"></iframe>
             </div>
             
