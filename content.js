@@ -45,7 +45,22 @@ function getItems(version){
             myItems = response.items;
             if(selectedItem){
                 let citiesStr = cities ? cities.join(',') : '';
-                buildItem(selectedItem, myItems, citiesStr);
+
+                let itemCounts = myItems.map((item)=> {
+                    return {title: item.title, count: item.owner_item_available_count}
+                });
+
+                let paramStr = '';
+                itemCounts.forEach((item)=>{
+                    if(item.count > 0){
+                        paramStr += item.title+':'+item.count+',';
+                    }
+                })
+
+                if(paramStr.length > 0){
+                    paramStr = paramStr.substring(0, paramStr.length-1)
+                }
+                buildItem(selectedItem, paramStr, citiesStr);
             }
         }
         // console.log(response.reply);
@@ -125,9 +140,24 @@ function addButtons(){
             // Create a new div element
             var newDiv = document.createElement("div"); 
             let citiesStr = cities ? cities.join(',') : '';
+            let itemCounts = myItems.map((item)=> {
+                return {title: item.title, count: item.owner_item_available_count}
+            });
+
+            let paramStr = '';
+            itemCounts.forEach((item)=>{
+                if(item.count > 0){
+                    paramStr += item.title+':'+item.count+',';
+                }
+            })
+
+            if(paramStr.length > 0){
+                paramStr = paramStr.substring(0, paramStr.length-1)
+            }
+
             newDiv.innerHTML = `
                 <div style="position:absolute;top:10px;left:10px;z-index:1000;">
-                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItem('${itemName}', ${offset}, '${citiesStr}')">
+                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItem('${itemName}', '${paramStr}', '${citiesStr}')">
                 </div>`;
             newDiv.style.cssText = '';
 
@@ -164,20 +194,6 @@ window.addEventListener('message', function(event) {
 function buildItem(itemName, items, citiesStr){
     // Append the div to the body
 
-    let itemCounts = items.map((item)=> {
-        return {title: item.title, count: item.owner_item_available_count}
-    });
-    let paramStr = '';
-    itemCounts.forEach((item)=>{
-        if(item.count > 0){
-            paramStr += item.title+':'+item.count+',';
-        }
-    })
-
-    if(paramStr.length > 0){
-        paramStr = paramStr.substring(0, paramStr.length-1)
-    }
-
     var headups = document.getElementById('headsup');
     if(!headups){
         headups = document.createElement("div"); 
@@ -196,7 +212,7 @@ function buildItem(itemName, items, citiesStr){
             </div>
 
             <div id="iframe_div" style="width: 500px;height: 600px;">
-                <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${paramStr}"></iframe>
+                <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}"></iframe>
             </div>
         </div>`;
     headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
