@@ -39,10 +39,13 @@ function buildItem(itemName, items, citiesStr){
     headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
     body.appendChild(headups);
     setTimeout(()=>{
+        document.getElementById('refreshBtn').addEventListener("click", ()=>{
+            recheckVersion();
+        });
         document.getElementById('closeBtn').addEventListener("click", ()=>{
             close();
         });
-    },0)
+    }, 0)
 }
 
 function close(){

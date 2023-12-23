@@ -217,12 +217,14 @@ function buildItem(itemName, items, citiesStr){
         </div>`;
     headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
     body.appendChild(headups);
-    document.getElementById('refreshBtn').addEventListener("click", ()=>{
-        recheckVersion();
-    });
-    document.getElementById('closeBtn').addEventListener("click", ()=>{
-        close();
-    });
+    setTimeout(()=>{
+        document.getElementById('refreshBtn').addEventListener("click", ()=>{
+            recheckVersion();
+        });
+        document.getElementById('closeBtn').addEventListener("click", ()=>{
+            close();
+        });
+    }, 0)
 }
 
 function close(){
