@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
     citiesSave.addEventListener("click", function() {
         saveCities();
     });
+    let removeAttacksBtn = document.getElementById('removeAttacks');
+    removeAttacksBtn.addEventListener("click", function() {
+        removeAttacks();
+    });
     
     chrome.storage.local.get(['enabled'], function(res) {
         if(res.enabled){
@@ -30,6 +34,12 @@ function saveCities(){
     cities = cities.split(',');
     chrome.runtime.sendMessage({action: "saveCities", cities: cities}, function(response) {
         console.log("saveCities complete");
+    });
+}
+
+function removeAttacks(){
+    chrome.runtime.sendMessage({action: "removeAttacks"}, function(response) {
+        console.log("removeAttacks complete");
     });
 }
 

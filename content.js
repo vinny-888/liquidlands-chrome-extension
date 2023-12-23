@@ -35,6 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+function removeAttacks(version){
+    chrome.runtime.sendMessage({action: "myItems", version: version}, function(response) {
+        if (chrome.runtime.lastError) {
+            // Handle any error that might have occurred during message passing
+            console.error(chrome.runtime.lastError.message);
+        } else {
+            console.log('Response from background:', response);
+        }
+    });
+}
+
 function getItems(version){
     chrome.runtime.sendMessage({action: "myItems", version: version}, function(response) {
         if (chrome.runtime.lastError) {
@@ -85,6 +96,8 @@ function recheckVersion(){
             recheckVersion();
         }, 200)
     } else {
+        console.log('Version Set:', version.value);
+        chrome.storage.local.set({"version":version.value});
         getItems(version.value);
     }
 }
@@ -229,9 +242,13 @@ function buildItemExt(itemName, items, citiesStr){
 
 function close(){
     // chrome.storage.sync.set({"enabled":false});
-    chrome.storage.local.set({ enabled: false }, function() {
-        console.log('Value is set to ' + 'value');
-    });
+    try{
+        chrome.storage.local.set({ enabled: false }, function() {
+            console.log('Value is set to ' + 'value');
+        });
+    } catch(err){
+        console.log('Error setting enabled to false:', err);
+    }
     let headsup = document.getElementById('iframe_div');
 
     if(headsup){
