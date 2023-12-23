@@ -1,0 +1,56 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <script src="popup.js"></script>
+    <style>
+        body { 
+            width: 300px;
+            height: auto;
+            padding: 0px;
+            margin: 0px;
+            background-color: #1f2932;
+            color: #fff;
+        }
+        .ttle {
+            width: calc(100% - 10px);
+            /* For browsers that do not support gradients */
+            background: -webkit-linear-gradient(#a5aaad, #6c6c6c);
+            /* For Safari 5.1 to 6.0 */
+            background: -o-linear-gradient(#a5aaad, #6c6c6c);
+            /* For Opera 11.1 to 12.0 */
+            background: -moz-linear-gradient(#a5aaad, #6c6c6c);
+            /* For Firefox 3.6 to 15 */
+            background: linear-gradient(#a5aaad, #6c6c6c);
+            /* Standard syntax */
+            height: auto;
+            padding: 5px;
+            border-radius: 8px;
+            background-color: #000;
+        }
+        .inner {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            border: none;
+            width: 100%;
+            height: auto;
+            padding: 20px;
+            min-height: 150px;
+            border-radius: 8px;
+            background-color: #000;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="ttle">
+        <div class="inner">
+            <div style="text-align: center;">
+                <h2>Liquidlands Pro</h2>
+            </div>
+            <div style="text-align: center;">
+                <input id="toggle" type="button" value="Enable">
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

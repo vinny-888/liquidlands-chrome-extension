@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "Liquidlands Pro",
+    "version": "1.0",
+    "description": "Liquidlands Pro",
+    "permissions": ["scripting", "activeTab", "storage"],
+    "host_permissions": ["https://liquidlands.io/controller"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": "logo.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "run_at": "document_start"
+      }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["popup.js", "injectedScript.js"],
+            "matches": ["<all_urls>"]
+        }
+    ]
+  }
+  
