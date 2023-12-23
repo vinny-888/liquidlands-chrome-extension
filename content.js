@@ -44,7 +44,8 @@ function getItems(version){
             console.log('Response from background:', response);
             myItems = response.items;
             if(selectedItem){
-                buildItem(selectedItem, myItems);
+                let citiesStr = cities ? cities.join(',') : '';
+                buildItem(selectedItem, myItems, citiesStr);
             }
         }
         // console.log(response.reply);
@@ -123,9 +124,10 @@ function addButtons(){
             })
             // Create a new div element
             var newDiv = document.createElement("div"); 
+            let citiesStr = cities ? cities.join(',') : '';
             newDiv.innerHTML = `
                 <div style="position:absolute;top:10px;left:10px;z-index:1000;">
-                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItem('${itemName}', ${offset})">
+                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItem('${itemName}', ${offset}, ${citiesStr})">
                 </div>`;
             newDiv.style.cssText = '';
 
@@ -159,7 +161,7 @@ window.addEventListener('message', function(event) {
     }
 });
 
-function buildItem(itemName, items){
+function buildItem(itemName, items, citiesStr){
     // Append the div to the body
 
     let itemCounts = items.map((item)=> {
@@ -181,7 +183,7 @@ function buildItem(itemName, items){
         headups = document.createElement("div"); 
     }
     headups.id = 'headsup';
-    let citiesStr = cities ? cities.join(',') : '';
+    // let citiesStr = cities ? cities.join(',') : '';
     headups.innerHTML = `
         <div style="background-color:white;z-index:1000;padding:0px;border: 1px solid #fff;">
             <div style="background-color: #1f2932;width: 100%;height: 24px;padding:4px;">

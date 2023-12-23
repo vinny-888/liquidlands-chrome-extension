@@ -12,7 +12,18 @@ function getVersion(){
     }
 }
 
-function buildItem(itemName, offset){
+function buildItem(itemName, items, citiesStr){
+
+    let itemCounts = items.map((item)=> {
+        return {title: item.title, count: item.owner_item_available_count}
+    });
+    let paramStr = '';
+    itemCounts.forEach((item)=>{
+        if(item.count > 0){
+            paramStr += item.title+':'+item.count+',';
+        }
+    })
+
     // Append the div to the body
     window.postMessage({ type: 'FROM_PAGE', message: itemName }, '*');
     var headups = document.getElementById('headsup');
@@ -32,7 +43,7 @@ function buildItem(itemName, offset){
                 </div>
             </div>
             <div id="iframe_div" style="width: 500px;height: 600px;">
-            <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=7605,7017"></iframe>
+            <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&items=${paramStr}&cities=${citiesStr}"></iframe>
             </div>
             
         </div>`;
