@@ -127,7 +127,7 @@ function addButtons(){
             let citiesStr = cities ? cities.join(',') : '';
             newDiv.innerHTML = `
                 <div style="position:absolute;top:10px;left:10px;z-index:1000;">
-                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItem('${itemName}', ${offset}, ${citiesStr})">
+                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItem('${itemName}', ${offset}, '${citiesStr}')">
                 </div>`;
             newDiv.style.cssText = '';
 
