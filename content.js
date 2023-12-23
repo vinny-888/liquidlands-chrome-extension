@@ -60,7 +60,7 @@ function getItems(version){
                 if(paramStr.length > 0){
                     paramStr = paramStr.substring(0, paramStr.length-1)
                 }
-                buildItem(selectedItem, paramStr, citiesStr);
+                buildItemExt(selectedItem, paramStr, citiesStr);
             }
         }
         // console.log(response.reply);
@@ -157,7 +157,7 @@ function addButtons(){
 
             newDiv.innerHTML = `
                 <div style="position:absolute;top:10px;left:10px;z-index:1000;">
-                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItem('${itemName}', '${paramStr}', '${citiesStr}')">
+                    <input id="build_${index}" style="background-color: #ccc;cursor: pointer;padding: 10px;border-radius: 4px;width: 50px;height: 34px;" type="button" value="Build" onclick="buildItemExt('${itemName}', '${paramStr}', '${citiesStr}')">
                 </div>`;
             newDiv.style.cssText = '';
 
@@ -178,7 +178,7 @@ function injectScript(file, node) {
 // content.js
 document.addEventListener('myCustomEvent', function(e) {
     // Call your function here
-    buildItem(e.detail);
+    buildItemExt(e.detail);
 });
 
 // content.js
@@ -186,12 +186,12 @@ window.addEventListener('message', function(event) {
     // Check if the message is from your webpage
     if (event.source === window && event.data && event.data.type === 'FROM_PAGE') {
         console.log('Message received in content script:', event.data);
-        // buildItem(event.data.message);
+        // buildItemExt(event.data.message);
         chrome.storage.local.set({"selectedItem":event.data.message});
     }
 });
 
-function buildItem(itemName, items, citiesStr){
+function buildItemExt(itemName, items, citiesStr){
     // Append the div to the body
 
     var headups = document.getElementById('headsup');
@@ -212,7 +212,7 @@ function buildItem(itemName, items, citiesStr){
             </div>
 
             <div id="iframe_div" style="width: 500px;height: 600px;">
-                <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}"></iframe>
+                <iframe style="display: block;width:100%;height: 100%;" src="http://127.0.0.1:8080/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}"></iframe>
             </div>
         </div>`;
     headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;

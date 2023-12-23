@@ -1,4 +1,6 @@
-getVersion();
+if(window.location.href.indexOf('liquidlands.io/') != -1){
+    getVersion();
+}
 
 function getVersion(){
     if(!$$.app.version){
@@ -12,7 +14,7 @@ function getVersion(){
     }
 }
 
-function buildItem(itemName, items, citiesStr){
+function buildItemExt(itemName, items, citiesStr){
     // Append the div to the body
     window.postMessage({ type: 'FROM_PAGE', message: itemName }, '*');
     var headups = document.getElementById('headsup');
