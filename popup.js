@@ -54,11 +54,18 @@ function getBuildableItems(){
     });
 }
 function buildItem(){
+    let info = document.getElementById('build_info');
+    info.innerHTML = 'Building please wait...';
     let select = document.getElementById('buildableItems');
     var value = select.options[select.selectedIndex].value;
     let cities = document.getElementById('cities').value;
     cities = cities.split(',');
     chrome.runtime.sendMessage({action: "buildItem", item: value, cities: cities}, function(response) {
+        let info = document.getElementById('build_info');
+        info.innerHTML = 'Building Complete!';
+        setTimeout(()=>{
+            info.innerHTML = '';
+        },3000);
         console.log("buildItem complete", response);
     });
 }
