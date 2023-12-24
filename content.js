@@ -1,6 +1,8 @@
 let myItems = [];
 let selectedItem = '';
 let cities = [];
+let base_url = 'https://vinny-888.github.io/LiquidLandsThematicMaps/';
+// let base_url = 'http://127.0.0.1:8080/';
 document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.local.get("enabled",function(res1) {
         if(res1.enabled){
@@ -206,45 +208,57 @@ window.addEventListener('message', function(event) {
 
 function buildItemExt(itemName, items, citiesStr){
     // Append the div to the body
-
-    var headups = document.getElementById('headsup');
-    if(!headups){
-        headups = document.createElement("div"); 
-    }
-    headups.id = 'headsup';
-    // let citiesStr = cities ? cities.join(',') : '';
-    headups.innerHTML = `
-        <div style="background-color:white;z-index:1000;padding:0px;border: 1px solid #fff;">
-            <div style="background-color: #1f2932;width: 100%;height: 24px;padding:4px;">
-                <div id="refreshBtn" style="font-weight: bold;text-align: center;color: #000;cursor: pointer;float:left;background-color: #00c5ff;margin-left: 6px;">
-                    Refresh Counts
+    chrome.storage.local.get("quantity",function(res) {
+        let quantity = 1;
+        if(res.quantity){
+            quantity = res.quantity;
+        }
+        var headups = document.getElementById('headsup');
+        if(!headups){
+            headups = document.createElement("div"); 
+        }
+        headups.id = 'headsup';
+        // let citiesStr = cities ? cities.join(',') : '';
+        headups.innerHTML = `
+            <div style="background-color:white;z-index:1000;padding:0px;border: 1px solid #fff;">
+                <div style="background-color: #1f2932;width: 100%;height: 30px;padding:4px;">
+                    <div id="refreshBtn" style="display: inline-block;float: left;width: 140px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
+                        Refresh Counts
+                    </div>
+                    <div style="display: inline-block;float: left;color: #FFF;margin-top: 4px;font-weight: bold;text-align: center;margin-left: 6px;">
+                        Quantity: <input style="background-color: #FFF;" id="quantity" type="number" value="${quantity}">
+                    </div>
+                    <div id="closeBtn" style="font-weight: bold;text-align: center;color: #F00;width: 20px;height: 20px;cursor: pointer;float:right;">
+                        X
+                    </div>
                 </div>
-                <div id="closeBtn" style="font-weight: bold;text-align: center;color: #F00;width: 20px;height: 20px;cursor: pointer;float:right;">
-                    X
-                </div>
-            </div>
 
-            <div id="iframe_div" style="width: 520px;height: 600px;">
-                <iframe style="display: block;width:100%;height: 100%;" src="https://vinny-888.github.io/LiquidLandsThematicMaps/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}"></iframe>
-            </div>
-        </div>`;
-    headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
-    body.appendChild(headups);
-    setTimeout(()=>{
-        document.getElementById('refreshBtn').addEventListener("click", ()=>{
-            recheckVersion();
-        });
-        document.getElementById('closeBtn').addEventListener("click", ()=>{
-            close();
-        });
-    }, 0)
+                <div id="iframe_div" style="width: 520px;height: 600px;">
+                    <iframe style="display: block;width:100%;height: 100%;" src="${base_url}/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}&quantity=${quantity}"></iframe>
+                </div>
+            </div>`;
+        headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
+        body.appendChild(headups);
+        setTimeout(()=>{
+            document.getElementById('refreshBtn').addEventListener("click", ()=>{
+                recheckVersion();
+            });
+            document.getElementById('closeBtn').addEventListener("click", ()=>{
+                close();
+            });
+            document.getElementById('quantity').addEventListener("click", ()=>{
+                updateQuantity();
+            });
+            
+        }, 0)
+    });
 }
 
 function close(){
     // chrome.storage.sync.set({"enabled":false});
     try{
         chrome.storage.local.set({ enabled: false }, function() {
-            console.log('Value is set to ' + 'value');
+            console.log('Value is set to false');
         });
     } catch(err){
         console.log('Error setting enabled to false:', err);
@@ -258,5 +272,19 @@ function close(){
         } else {
             headsup.style.display = 'block';
         }
+    }
+}
+
+function updateQuantity(){
+
+    let quantity = document.getElementById('quantity').value;
+    // chrome.storage.sync.set({"enabled":false});
+    try{
+        chrome.storage.local.set({ quantity: quantity}, function() {
+            console.log('quantity is set to ' + quantity);
+            recheckVersion();
+        });
+    } catch(err){
+        console.log('Error setting quantity to : '+quantity, err);
     }
 }
