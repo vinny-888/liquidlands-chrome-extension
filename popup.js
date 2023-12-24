@@ -59,7 +59,7 @@ function buildItem(){
     let cities = document.getElementById('cities').value;
     cities = cities.split(',');
     chrome.runtime.sendMessage({action: "buildItem", item: value, cities: cities}, function(response) {
-        console.log("buildItem complete", response.items);
+        console.log("buildItem complete", response);
     });
 }
 
@@ -74,6 +74,7 @@ function saveCities(){
 function removeAttacks(){
     chrome.runtime.sendMessage({action: "removeAttacks"}, function(response) {
         console.log("removeAttacks complete");
+        aler('Item Built!')
     });
 }
 
