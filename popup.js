@@ -11,7 +11,17 @@ document.addEventListener('DOMContentLoaded', function () {
     removeAttacksBtn.addEventListener("click", function() {
         removeAttacks();
     });
-    
+
+    let getBuildableItemsBtn = document.getElementById('getBuildableItems');
+    getBuildableItemsBtn.addEventListener("click", function() {
+        getBuildableItems();
+    });
+
+    let buildItemBtn = document.getElementById('buildItem');
+    buildItemBtn.addEventListener("click", function() {
+        buildItem();
+    });
+
     chrome.storage.local.get(['enabled'], function(res) {
         if(res.enabled){
             toggle.value = 'Disable';
@@ -27,7 +37,31 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('cities').value = '';
         }
     });
+
+    
 });
+
+function getBuildableItems(){
+    chrome.runtime.sendMessage({action: "getBuildableItems"}, function(response) {
+        console.log("getBuildableItems complete", response.items);
+        let select = document.getElementById('buildableItems');
+        response.items.forEach(item => {
+            let option = document.createElement('option');
+            option.value = item.title;
+            option.innerHTML = item.title;
+            select.appendChild(option);
+        });
+    });
+}
+function buildItem(){
+    let select = document.getElementById('buildableItems');
+    var value = select.options[select.selectedIndex].value;
+    let cities = document.getElementById('cities').value;
+    cities = cities.split(',');
+    chrome.runtime.sendMessage({action: "buildItem", item: value, cities: cities}, function(response) {
+        console.log("buildItem complete", response.items);
+    });
+}
 
 function saveCities(){
     let cities = document.getElementById('cities').value;
