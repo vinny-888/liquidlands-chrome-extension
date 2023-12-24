@@ -45,7 +45,8 @@ function getBuildableItems(){
     chrome.runtime.sendMessage({action: "getBuildableItems"}, function(response) {
         console.log("getBuildableItems complete", response.items);
         let select = document.getElementById('buildableItems');
-        response.items.forEach(item => {
+        let sortedItems = response.items.sort((a,b)=> (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0));
+        sortedItems.forEach(item => {
             let option = document.createElement('option');
             option.value = item.title;
             option.innerHTML = item.title;
