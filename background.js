@@ -416,7 +416,7 @@ async function buildItemComplete(name, cities, version){
     let bestChildCity = citiesWithItem2[0];
     if(cities){
       citiesWithItem2.forEach((city)=>{
-        if(cities.indexOf(city.id)){
+        if(cities.indexOf(''+city.id) != -1){
           bestChildCity = city;
         }
       })
