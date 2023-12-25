@@ -410,7 +410,8 @@ async function buildItemComplete(name, cities, version){
   let children = {};
   getChildrenRecursive(item, children);
   let sortedByLevel = getSortedKeysByLevel(children);
-  sortedByLevel.forEach(async (key, index)=>{
+  for(let i=0; i<sortedByLevel.length; i++){
+    let key = sortedByLevel[i];
     let citiesWithItem2 = getCitiesWithItem(key);
     citiesWithItem2.sort((a,b) => (b.buildings[key].count > a.buildings[key].count) ? 1 : ((a.buildings[key].count > b.buildings[key].count) ? -1 : 0))
     let bestChildCity = citiesWithItem2[0];
@@ -427,7 +428,7 @@ async function buildItemComplete(name, cities, version){
     console.log('Building:', key, ' at ', bestChildCity);
     await buildItems(bestChildCity.id, childItem.id, building.x, building.y, quantity, version)
     console.log('Item built!');
-  });
+  }
 }
 
 async function buildItems(city_id, blueprint_id, x, y, quantity, version){
