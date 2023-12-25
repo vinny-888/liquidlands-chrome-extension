@@ -96,7 +96,7 @@ function saveCities(){
 function removeAttacks(){
     chrome.runtime.sendMessage({action: "removeAttacks"}, function(response) {
         console.log("removeAttacks complete");
-        aler('Item Built!')
+        alert('Attacks Removed!');
     });
 }
 
