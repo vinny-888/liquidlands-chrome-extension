@@ -51,9 +51,10 @@ chrome.runtime.onMessage.addListener(
       });
     }   else if (request.action === "buildItem"){
       console.log('buildItem');
-      chrome.storage.local.get("version",function(res) {
+      chrome.storage.local.get("version", async function(res) {
         console.log('getBuildableItems version', res.version);
-        buildItemComplete(request.item, request.cities, res.version);
+        let results = await buildItemComplete(request.item, request.cities, res.version);
+        sendResponse({results: results});
       });
     } 
 
@@ -410,6 +411,7 @@ async function buildItemComplete(name, cities, version){
   let children = {};
   getChildrenRecursive(item, children);
   let sortedByLevel = getSortedKeysByLevel(children);
+  let results = {};
   for(let i=0; i<sortedByLevel.length; i++){
     let key = sortedByLevel[i];
     let citiesWithItem2 = getCitiesWithItem(key);
@@ -426,12 +428,15 @@ async function buildItemComplete(name, cities, version){
     let quantity = children[key].count;
     let childItem = all_items.find((item)=>item.title == key);
     console.log('Building:', key, ' at ', bestChildCity);
-    await buildItems(bestChildCity.id, childItem.id, building.x, building.y, quantity, version)
+    let itmeResults = await buildItems(bestChildCity.id, childItem.id, building.x, building.y, quantity, version, key);
+    results = { ...results, ...itmeResults };
     console.log('Item built!');
   }
+  return results;
 }
 
-async function buildItems(city_id, blueprint_id, x, y, quantity, version){
+async function buildItems(city_id, blueprint_id, x, y, quantity, version, name){
+  let results = {};
   for(let i=0;i<quantity; i++){
     try{
       let response = await fetch("https://liquidlands.io/controller", {
@@ -444,6 +449,7 @@ async function buildItems(city_id, blueprint_id, x, y, quantity, version){
         "credentials": "include"
       })
       let res = await response.json();
+      results[name] = res.b;
       console.log('Made item', res);
     }catch(err){
       console.log('Error making item', err);
@@ -451,4 +457,5 @@ async function buildItems(city_id, blueprint_id, x, y, quantity, version){
     }
     await sleep(100);
   }
+  return results;
 }

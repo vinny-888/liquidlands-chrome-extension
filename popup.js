@@ -63,10 +63,24 @@ function buildItem(){
     cities = cities.split(',');
     chrome.runtime.sendMessage({action: "buildItem", item: value, cities: cities}, function(response) {
         let info = document.getElementById('build_info');
-        info.innerHTML = 'Building Complete!';
-        setTimeout(()=>{
-            info.innerHTML = '';
-        },3000);
+        let failed = '';
+        let outOfFunds = '';
+        Object.keys(response.results).forEach((key)=>{
+            if(response.results[key] != 'Success'){
+                if(outOfFunds == '' && response.results[key] == "Fail_InsufficientFunds"){
+                    outOfFunds = 'Not enough Bricks';
+                }
+                failed += ` - ${key} Failed!
+`
+            }
+        })
+        let status = failed.length == 0 ? "Complete" : "Failed";
+        info.innerHTML = `<pre>Building ${status}! ${outOfFunds}
+${failed}
+</pre>`;
+        // setTimeout(()=>{
+        //     info.innerHTML = '';
+        // },10000);
         console.log("buildItem complete", response);
     });
 }
