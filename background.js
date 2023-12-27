@@ -22,9 +22,10 @@ chrome.runtime.onMessage.addListener(
       });
     } else if (request.action === "removeAttacks") {
       console.log("Message received in background script");
-      chrome.storage.local.get("version",function(res) {
+      chrome.storage.local.get("version", async function(res) {
         console.log("Message received in background script with version:", res);
-        removeAttackItems(res.version);
+        await removeAttackItems(res.version);
+        sendResponse({success: true});
       });
     }  else if (request.action === "buildItems") {
       console.log("Message received in background script");
@@ -246,81 +247,73 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function removeAttackItems(version){
-  fetch("https://liquidlands.io/controller", {
+async function removeAttackItems(version){
+  let res1 = await fetch("https://liquidlands.io/controller", {
     "headers": {
       "accept": "application/json, text/javascript, */*; q=0.01",
       "content-type": "application/json; charset=UTF-8",
     },
     "body": "{\"controller\":\"Explorers.Cards\",\"fields\":{\"max\":10,\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
     "method": "POST",
-  }).then((res)=>{
-    return res.json();
-  }).then(async (res)=>{
+  })
+  let res1Json = await res1.json();
 
-    for(let i=0; i< res.d.cards.length; i++){
-      let card = res.d.cards[i];
-      console.log('Get Bricks and Items: ', i);
-      await sleep(100);
-      await fetch("https://liquidlands.io/controller", {
-        "headers": {
-          "accept": "application/json, text/javascript, */*; q=0.01",
-          "cache-control": "no-cache",
-          "content-type": "application/json; charset=UTF-8",
-        },
-        "body": "{\"controller\":\"Explorers.CardEditBricks\",\"fields\":{\"id\":"+card.id+",\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
-        "method": "POST"
-      }).then((res)=>{
-          return res.json();
-      }).then(async (res)=>{
-        let bricks = res.d.bricks;
-        let items = res.d.items;
+  for(let i=0; i< res1Json.d.cards.length; i++){
+    let card = res1Json.d.cards[i];
+    console.log('Get Bricks and Items: ', i);
+    await sleep(100);
+    let res2 = await fetch("https://liquidlands.io/controller", {
+      "headers": {
+        "accept": "application/json, text/javascript, */*; q=0.01",
+        "cache-control": "no-cache",
+        "content-type": "application/json; charset=UTF-8",
+      },
+      "body": "{\"controller\":\"Explorers.CardEditBricks\",\"fields\":{\"id\":"+card.id+",\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
+      "method": "POST"
+    })
+    let res2Json = await res2.json();
+    let bricks = res2Json.d.bricks;
+    let items = res2Json.d.items;
 
-        if(bricks.length > 0){
-          for(let j=0; j< bricks.length; j++){
-            let brick = bricks[j];
-            if(brick.attack > 12 && brick.defence == 0){
-              await sleep(100);
-              console.log('Removing Brick:', brick);
-              await fetch("https://liquidlands.io/controller", {
-                "headers": {
-                  "accept": "application/json, text/javascript, */*; q=0.01",
-                  "content-type": "application/json; charset=UTF-8",
-                },
-                "body": "{\"controller\":\"Explorers.CardToggleBrick\",\"fields\":{\"id\":"+card.id+",\"brick_id\":"+brick.id+",\"enable\":false,\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
-                "method": "POST",
-              }).then((res)=>{
-                return res.json();
-              }).then(async (res)=>{
-                console.log('remove brick res:', res);
-              });
-            }
-          }
+    if(bricks.length > 0){
+      for(let j=0; j< bricks.length; j++){
+        let brick = bricks[j];
+        if(brick.attack > 12 && brick.defence == 0){
+          await sleep(100);
+          console.log('Removing Brick:', brick);
+          let res3 = await fetch("https://liquidlands.io/controller", {
+            "headers": {
+              "accept": "application/json, text/javascript, */*; q=0.01",
+              "content-type": "application/json; charset=UTF-8",
+            },
+            "body": "{\"controller\":\"Explorers.CardToggleBrick\",\"fields\":{\"id\":"+card.id+",\"brick_id\":"+brick.id+",\"enable\":false,\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
+            "method": "POST",
+          })
+          let res3Json = await res3.json();
+          console.log('remove brick res:', res3Json);
         }
-
-        if(items.length > 0){
-          for(let j=0; j< items.length; j++){
-            let item = items[j];
-            if((item.attack > 0 || (item.invincibility > 0 && item.invincibility != 4)) && item.defence == 0){
-              await sleep(100);
-              await fetch("https://liquidlands.io/controller", {
-                "headers": {
-                  "accept": "application/json, text/javascript, */*; q=0.01",
-                  "content-type": "application/json; charset=UTF-8",
-                },
-                "body": "{\"controller\":\"Explorers.CardToggleItem\",\"fields\":{\"id\":"+card.id+",\"item_id\":"+item.id+",\"enable\":false,\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
-                "method": "POST",
-              }).then((res)=>{
-                return res.json();
-              }).then(async (res)=>{
-                console.log('remove item res:', res);
-              });
-            }
-          }
-        }
-      });
+      }
     }
-  });
+
+    if(items.length > 0){
+      for(let j=0; j< items.length; j++){
+        let item = items[j];
+        if((item.attack > 0 || (item.invincibility > 0 && item.invincibility != 4)) && item.defence == 0){
+          await sleep(100);
+          let res3 = await fetch("https://liquidlands.io/controller", {
+            "headers": {
+              "accept": "application/json, text/javascript, */*; q=0.01",
+              "content-type": "application/json; charset=UTF-8",
+            },
+            "body": "{\"controller\":\"Explorers.CardToggleItem\",\"fields\":{\"id\":"+card.id+",\"item_id\":"+item.id+",\"enable\":false,\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
+            "method": "POST",
+          })
+          let res3Json = await res3.json();
+          console.log('remove item res:', res3Json);
+        }
+      }
+    }
+  }
 }
 
 function getNonZeroNumbers(obj) {

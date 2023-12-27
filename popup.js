@@ -94,8 +94,12 @@ function saveCities(){
 }
 
 function removeAttacks(){
+    let info = document.getElementById('build_info');
+    info.innerHTML = 'Removing Attacks please wait...';
     chrome.runtime.sendMessage({action: "removeAttacks"}, function(response) {
         console.log("removeAttacks complete");
+        let info = document.getElementById('build_info');
+        info.innerHTML = 'Remove Attacks Complete!';
     });
 }
 
