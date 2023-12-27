@@ -390,6 +390,9 @@ function getCitiesWithItem(itemName){
 }
 
 async function buildItemComplete(name, cities, version){
+  if(!all_items || all_items.length > 0){
+    await loadJSONData();
+  }
   let item = all_items.find((item)=>item.title == name);
   let citiesWithItem = getCitiesWithItem(item.title);
   citiesWithItem.sort((a,b) => (b.buildings[name].count > a.buildings[name].count) ? 1 : ((a.buildings[name].count > b.buildings[name].count) ? -1 : 0))
