@@ -110,15 +110,17 @@ chrome.runtime.onMessage.addListener((request) => {
         chrome.storage.local.set({ enabled: true }, function() {
             console.log('Value is set to ' + 'value');
         });
-        if(window.location.href.indexOf('blueprints') != -1){
-            addButtons();
-        }
+        window.location.reload();
+        // if(window.location.href.indexOf('blueprints') != -1){
+        //     addButtons();
+        // }
     } else if (request.action == 'disable'){
         // chrome.storage.sync.set({"enabled":false});
         chrome.storage.local.set({ enabled: false }, function() {
             console.log('Value is set to ' + 'value');
         });
         close();
+        window.location.reload();
     } else if(request.action == 'myItems'){
         console.log('items: ', request.items);
     } else if(request.action == 'saveCities'){
@@ -234,7 +236,7 @@ function buildItemExt(itemName, items, citiesStr){
                 </div>
 
                 <div id="iframe_div" style="width: 520px;height: 600px;">
-                    <iframe style="display: block;width:100%;height: 100%;" src="${base_url}/items/item_small.html?item=${itemName}&cities=${citiesStr}&items=${items}&quantity=${quantity}"></iframe>
+                    <iframe style="display: block;width:100%;height: 100%;" src="${base_url}/items/item_small.html?v=0.1&item=${itemName}&cities=${citiesStr}&items=${items}&quantity=${quantity}"></iframe>
                 </div>
             </div>`;
         headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
