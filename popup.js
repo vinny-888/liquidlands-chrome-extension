@@ -42,14 +42,42 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function getBuildableItems(){
+    let bricks = document.getElementById('bricks').value;
+    if(bricks != ''){
+        bricks = parseInt(bricks);
+    } else {
+        bricks = 9999;
+    }
     chrome.runtime.sendMessage({action: "getBuildableItems"}, function(response) {
         console.log("getBuildableItems complete", response.items);
         let select = document.getElementById('buildableItems');
+        select.innerHTML = '';
         let sortedItems = response.items.sort((a,b)=> (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0));
+        sortedItems = sortedItems.filter((item)=>item.difficulty <= bricks);
         sortedItems.forEach(item => {
             let option = document.createElement('option');
             option.value = item.title;
-            option.innerHTML = item.title;
+            let values = ' b:' + item.difficulty;
+            if(item.attack != 0){
+                values += ' a: ' + item.attack
+            }
+
+            if(item.defence != 0){
+                values += ' d: ' + item.defence
+            }
+
+            if(item.raid != 0){
+                values += ' r: ' + item.raid
+            }
+
+            if(item.invincibility != 0){
+                values += ' i: ' + item.invincibility
+            }
+
+            if(item.leave != 0){
+                values += ' l: ' + item.leave
+            }
+            option.innerHTML = item.title + values;
             select.appendChild(option);
         });
     });

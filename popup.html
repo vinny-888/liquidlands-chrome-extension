@@ -39,6 +39,9 @@
             border-radius: 8px;
             background-color: #000;
         }
+        input {
+            margin: 4px;
+        }
     </style>
   </head>
   <body>
@@ -58,10 +61,14 @@
                     </span>
                     <br>
                     <div style="display: block;">
+                        <label style="font-size: 10px;">Available Bricks:</label> 
+                        <input id="bricks" type="text" value="">
+                        <br>
+                        <input id="getBuildableItems" type="button" value="Filter Items">
+                        <br>
                         <select id="buildableItems" type="button" value="">
                         </select>
                         <br>
-                        <input id="getBuildableItems" type="button" value="Load Items">
                         <input id="buildItem" type="button" value="Build Item">
                         <br>
                         <span style="text-align: left;" id="build_info"></span>
