@@ -42,18 +42,14 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function getBuildableItems(){
-    let bricks = document.getElementById('bricks').value;
-    if(bricks != ''){
-        bricks = parseInt(bricks);
-    } else {
-        bricks = 9999;
-    }
+    let bricks_min = document.getElementById('bricks_min').value;
+    let bricks_max = document.getElementById('bricks_max').value;
     chrome.runtime.sendMessage({action: "getBuildableItems"}, function(response) {
         console.log("getBuildableItems complete", response.items);
         let select = document.getElementById('buildableItems');
         select.innerHTML = '';
         let sortedItems = response.items.sort((a,b)=> (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0));
-        sortedItems = sortedItems.filter((item)=>item.difficulty <= bricks);
+        sortedItems = sortedItems.filter((item)=>item.difficulty <= bricks_max && item.difficulty >= bricks_min);
         sortedItems.forEach(item => {
             let option = document.createElement('option');
             option.value = item.title;

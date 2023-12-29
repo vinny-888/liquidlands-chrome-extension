@@ -227,8 +227,11 @@ function buildItemExt(itemName, items, citiesStr){
                     <div id="refreshBtn" style="display: inline-block;float: left;width: 140px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
                         Refresh Counts
                     </div>
+                    <div id="harvestBtn" style="display: inline-block;float: left;width: 140px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
+                        Harvest All
+                    </div>
                     <div style="display: inline-block;float: left;color: #FFF;margin-top: 4px;font-weight: bold;text-align: center;margin-left: 6px;">
-                        Quantity: <input style="background-color: #FFF;" id="quantity" type="number" value="${quantity}">
+                        Quantity: <input style="background-color: #FFF;width: 30px;" id="quantity" type="number" value="${quantity}">
                     </div>
                     <div id="closeBtn" style="font-weight: bold;text-align: center;color: #F00;width: 20px;height: 20px;cursor: pointer;float:right;">
                         X
@@ -250,6 +253,9 @@ function buildItemExt(itemName, items, citiesStr){
             });
             document.getElementById('quantity').addEventListener("click", ()=>{
                 updateQuantity();
+            });
+            document.getElementById('harvestBtn').addEventListener("click", ()=>{
+                harvestAll();
             });
             
         }, 0)
@@ -288,5 +294,16 @@ function updateQuantity(){
         });
     } catch(err){
         console.log('Error setting quantity to : '+quantity, err);
+    }
+}
+
+function harvestAll(){
+    let harvestBtns = document.getElementsByClassName('action');
+    if(harvestBtns){
+        Array.from(harvestBtns).forEach((action)=>{
+            action.click();
+        })
+    } else {
+        alert('Must be on harvest screen');
     }
 }
