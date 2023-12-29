@@ -297,12 +297,20 @@ function updateQuantity(){
     }
 }
 
-function harvestAll(){
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function harvestAll(){
     let harvestBtns = document.getElementsByClassName('action');
     if(harvestBtns){
-        Array.from(harvestBtns).forEach((action)=>{
+        let actions = Array.from(harvestBtns)
+        for(let i=0;i<actions.length; i++){
+            let action = actions[i];
             action.click();
-        })
+            await sleep(50);
+        }
+        alert('Items harvested');
     } else {
         alert('Must be on harvest screen');
     }
