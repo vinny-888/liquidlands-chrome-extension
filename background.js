@@ -261,7 +261,6 @@ async function removeAttackItems(version){
   for(let i=0; i< res1Json.d.cards.length; i++){
     let card = res1Json.d.cards[i];
     console.log('Get Bricks and Items: ', i);
-    await sleep(100);
     let res2 = await fetch("https://liquidlands.io/controller", {
       "headers": {
         "accept": "application/json, text/javascript, */*; q=0.01",
@@ -279,7 +278,6 @@ async function removeAttackItems(version){
       for(let j=0; j< bricks.length; j++){
         let brick = bricks[j];
         if(brick.attack > 12 && brick.defence == 0){
-          await sleep(100);
           console.log('Removing Brick:', brick);
           let res3 = await fetch("https://liquidlands.io/controller", {
             "headers": {
@@ -291,6 +289,7 @@ async function removeAttackItems(version){
           })
           let res3Json = await res3.json();
           console.log('remove brick res:', res3Json);
+          await sleep(50);
         }
       }
     }
@@ -299,7 +298,7 @@ async function removeAttackItems(version){
       for(let j=0; j< items.length; j++){
         let item = items[j];
         if((item.attack > 0 || (item.invincibility > 0 && item.invincibility != 4)) && item.defence == 0){
-          await sleep(100);
+          await sleep(50);
           let res3 = await fetch("https://liquidlands.io/controller", {
             "headers": {
               "accept": "application/json, text/javascript, */*; q=0.01",
@@ -313,6 +312,7 @@ async function removeAttackItems(version){
         }
       }
     }
+    await sleep(50);
   }
 }
 
@@ -451,7 +451,7 @@ async function buildItems(city_id, blueprint_id, x, y, quantity, version, name){
       console.log('Error making item', err);
       alert('Error making item, city snapshot may be out of date.', err);
     }
-    await sleep(100);
+    await sleep(50);
   }
   return results;
 }
