@@ -224,11 +224,14 @@ function buildItemExt(itemName, items, citiesStr){
         headups.innerHTML = `
             <div style="background-color:white;z-index:1000;padding:0px;border: 1px solid #fff;">
                 <div style="background-color: #1f2932;width: 100%;height: 30px;padding:4px;">
-                    <div id="refreshBtn" style="display: inline-block;float: left;width: 140px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
-                        Refresh Counts
+                    <div id="refreshBtn" style="display: inline-block;float: left;width: 80px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
+                        Refresh
                     </div>
-                    <div id="harvestBtn" style="display: inline-block;float: left;width: 140px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
-                        Harvest All
+                    <div id="harvestBtn" style="display: inline-block;float: left;width: 80px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
+                        Harvest
+                    </div>
+                    <div id="expandAll" style="display: inline-block;float: left;width: 80px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
+                        Expand
                     </div>
                     <div style="display: inline-block;float: left;color: #FFF;margin-top: 4px;font-weight: bold;text-align: center;margin-left: 6px;">
                         Quantity: <input style="background-color: #FFF;width: 30px;" id="quantity" type="number" value="${quantity}">
@@ -256,6 +259,9 @@ function buildItemExt(itemName, items, citiesStr){
             });
             document.getElementById('harvestBtn').addEventListener("click", ()=>{
                 harvestAll();
+            });
+            document.getElementById('expandAll').addEventListener("click", ()=>{
+                expandAll();
             });
             
         }, 0)
@@ -313,5 +319,17 @@ async function harvestAll(){
         alert('Items harvested');
     } else {
         alert('Must be on harvest screen');
+    }
+}
+
+async function expandAll(){
+    let elm = {};
+    while(elm){
+        let elms = Array.from(document.getElementsByClassName('addon_more'));
+        if(elms.length > 0){
+            elm = elms[0];
+            elm.click();
+        }
+        await sleep(1000);
     }
 }

@@ -310,7 +310,7 @@ async function removeAttackItems(version){
     if(items.length > 0){
       for(let j=0; j< items.length; j++){
         let item = items[j];
-        if((item.attack > 12 && item.defence == 0 || ((item.invincibility > 12 && item.invincibility != 4) && item.defence == 0))){
+        if((item.attack > 0 && item.defence == 0 || ((item.invincibility > 0 && item.invincibility != 4) && item.defence == 0))){
           await sleep(50);
           let res3 = await fetch("https://liquidlands.io/controller", {
             "headers": {
