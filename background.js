@@ -33,6 +33,14 @@ chrome.runtime.onMessage.addListener(
         console.log("Message received in background script with version:", res);
         buildItems(res.version);
       });
+    }  else if (request.action === "soldItems") {
+      console.log("Message received in background script");
+      chrome.storage.local.get("version",async function(res) {
+        console.log("Message received in background script with version:", res);
+        let soldCounts = await getSoldCounts(res.version);
+
+        sendResponse({soldCounts: soldCounts});
+      });
     }  else if (request.action === "getBuildableItems"){
       console.log('getBuildableItems');
       chrome.storage.local.get("version",function(res) {
@@ -454,4 +462,54 @@ async function buildItems(city_id, blueprint_id, x, y, quantity, version, name){
     await sleep(50);
   }
   return results;
+}
+
+async function getSoldCounts(version){
+  let stats = {};
+
+  let lowest_id = 0;
+  while(lowest_id != null){
+    let res = await fetch("https://liquidlands.io/controller", {
+      "headers": {
+        "accept": "application/json, text/javascript, */*; q=0.01",
+        "content-type": "application/json; charset=UTF-8",
+      },
+      "body": "{\"controller\":\"History.Cards\",\"fields\":{\"filter\":\"+items_sold\",\"below_id\":"+lowest_id+",\"max\":200,\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
+      "method": "POST"
+    });
+    let json = await res.json();
+    let cards = json.d.cards;
+    lowest_id = json.d.lowest_id;
+
+    for(let i=0; i<json.d.cards.length; i++){
+      let item = json.d.cards[i];
+      let title = item.object_title;
+      if(!stats[title]){
+        stats[title] = {
+          count: 0,
+          bricks: 0
+        };
+      }
+      stats[title].count++;
+      stats[title].bricks+=item.amount;
+    }
+    console.log('stats',stats);
+    await sleep(100);
+
+  }
+  console.log('stats',stats);
+  let keys = getSortedKeys(stats);
+
+  let soldItems = [];
+
+  keys.forEach((key)=>{
+    soldItems.push({
+      name: key,
+      count: stats[key].count,
+      bricks: stats[key].bricks.toFixed(2)
+    });
+  })
+
+  console.log('soldItems',soldItems);
+  return soldItems;
 }

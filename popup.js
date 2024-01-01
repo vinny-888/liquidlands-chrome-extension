@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', function () {
         buildItem();
     });
 
+    let soldItemsBtn = document.getElementById('getSoldCounts');
+    soldItemsBtn.addEventListener("click", function() {
+        soldItems();
+    });
+
     chrome.storage.local.get(['enabled'], function(res) {
         if(res.enabled){
             toggle.value = 'Disable';
@@ -102,6 +107,25 @@ function buildItem(){
         info.innerHTML = `<pre>Building ${status}! ${outOfFunds}
 ${failed}
 </pre>`;
+        // setTimeout(()=>{
+        //     info.innerHTML = '';
+        // },10000);
+        console.log("buildItem complete", response);
+    });
+}
+
+function soldItems(){
+    let info = document.getElementById('build_info');
+    info.innerHTML = 'Calculating please wait...';
+    chrome.runtime.sendMessage({action: "soldItems"}, function(response) {
+        let info = document.getElementById('build_info');
+        let stats = '';
+        response.soldCounts.forEach((item)=>{
+            stats += `${item.count} x ${item.name} - ${item.bricks} Bricks
+`
+        })
+        info.innerHTML = `<pre>Sales Stats: 
+${stats}</pre>`;
         // setTimeout(()=>{
         //     info.innerHTML = '';
         // },10000);
