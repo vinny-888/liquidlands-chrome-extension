@@ -239,7 +239,7 @@ function buildItemExt(itemName, items, citiesStr){
                 </div>
 
                 <div id="iframe_div" style="width: 520px;height: 600px;">
-                    <iframe style="display: block;width:100%;height: 100%;" src="${base_url}/items/item_small.html?v=0.2&item=${itemName}&cities=${citiesStr}&items=${items}&quantity=${quantity}"></iframe>
+                    <iframe style="display: block;width:100%;height: 100%;" src="${base_url}/items/item_small.html?v=0.3&item=${itemName}&cities=${citiesStr}&items=${items}&quantity=${quantity}"></iframe>
                 </div>
             </div>`;
         headups.style.cssText = `position:fixed;top:70px;right:10px;z-index: 9999;`;
