@@ -230,8 +230,8 @@ function buildItemExt(itemName, items, citiesStr){
                     <div id="harvestBtn" style="display: inline-block;float: left;width: 80px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
                         Harvest
                     </div>
-                    <div id="expandAll" style="display: inline-block;float: left;width: 80px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
-                        Expand
+                    <div id="expandAll" style="display: inline-block;float: left;width: 90px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
+                        Show Att
                     </div>
                     <div style="display: inline-block;float: left;color: #FFF;margin-top: 4px;font-weight: bold;text-align: center;margin-left: 6px;">
                         Quantity: <input style="background-color: #FFF;width: 30px;" id="quantity" type="number" value="${quantity}">
@@ -329,7 +329,23 @@ async function expandAll(){
         if(elms.length > 0){
             elm = elms[0];
             elm.click();
+        } else {
+            elm = null;
         }
-        await sleep(1000);
+        await sleep(300);
     }
+    console.log('Done expanding')
+    await sleep(2000);
+    let cards = document.getElementById('DeckCards').childNodes;
+    let removeCards = [];
+    cards.forEach((card)=>{
+        let action = card.querySelector('.action');
+        if(action){
+            removeCards.push(card)
+        }
+    })
+    console.log('Removing')
+    removeCards.forEach((card)=>{
+        card.parentNode.removeChild(card);
+    });
 }
