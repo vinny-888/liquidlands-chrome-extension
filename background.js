@@ -234,6 +234,11 @@ function getSortedKeysByLevel(obj) {
   return keys.sort(function(a,b){return obj[b].level-obj[a].level});
 }
 
+function getSortedKeysByBricks(obj) {
+  var keys = Object.keys(obj);
+  return keys.sort(function(a,b){return obj[b].bricks-obj[a].bricks});
+}
+
 async function getItems(version){
   console.log('Get items');
 
@@ -497,8 +502,7 @@ async function getSoldCounts(version){
     await sleep(100);
 
   }
-  console.log('stats',stats);
-  let keys = getSortedKeys(stats);
+  let keys = getSortedKeysByBricks(stats);
 
   let soldItems = [];
 
@@ -510,6 +514,5 @@ async function getSoldCounts(version){
     });
   })
 
-  console.log('soldItems',soldItems);
   return soldItems;
 }
