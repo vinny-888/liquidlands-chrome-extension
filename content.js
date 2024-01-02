@@ -332,10 +332,10 @@ async function expandAll(){
         } else {
             elm = null;
         }
-        await sleep(300);
+        await sleep(250);
     }
     console.log('Done expanding')
-    await sleep(2000);
+    await sleep(1500);
     let cards = document.getElementById('DeckCards').childNodes;
     let removeCards = [];
     cards.forEach((card)=>{
