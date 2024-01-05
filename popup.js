@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
     removeAttacksBtn.addEventListener("click", function() {
         removeAttacks();
     });
+    let explorerItemsBtn = document.getElementById('explorerItems');
+    explorerItemsBtn.addEventListener("click", function() {
+        explorerItems();
+    });
 
     let getBuildableItemsBtn = document.getElementById('getBuildableItems');
     getBuildableItemsBtn.addEventListener("click", function() {
@@ -148,6 +152,48 @@ function removeAttacks(){
         console.log("removeAttacks complete");
         let info = document.getElementById('build_info');
         info.innerHTML = 'Remove Attacks Complete!';
+    });
+}
+
+function explorerItems(){
+    let info = document.getElementById('build_info');
+    info.innerHTML = 'Getting all items please wait...';
+    chrome.runtime.sendMessage({action: "explorerItems"}, function(response) {
+        console.log("explorer items complete");
+        let stats = response.stats;
+        let total = (stats.ranges['3.0'] * 3) 
+            + (stats.ranges['2.0'] * 2)
+            + (stats.ranges['1.5'] * 1.5)
+            + (stats.ranges['1.0'] * 1.0)
+            + (stats.ranges['0.7'] * 0.7)
+            + (stats.ranges['0.5'] * 0.5)
+            + (stats.ranges['0.4'] * 0.4)
+            + (stats.ranges['0.3'] * 0.3)
+            + (stats.ranges['0.2'] * 0.2)
+            + (stats.ranges['0.1'] * 0.1);
+        let results = 
+`Bricks: ${stats.bricks.count}
+  Attack: ${stats.bricks.attack}
+  Defense: ${stats.bricks.defense}
+
+Items: ${stats.items.count}
+  Attack: ${stats.items.attack}
+  Defense: ${stats.items.defense}
+  
+Explorers:
+3.0: ${stats.ranges['3.0']} - ${stats.ranges['3.0'] * 3}
+2.0: ${stats.ranges['2.0']} - ${stats.ranges['2.0'] * 2}
+1.5: ${stats.ranges['1.5']} - ${stats.ranges['1.5'] * 1.5}
+1.0: ${stats.ranges['1.0']} - ${stats.ranges['1.0'] * 1}
+0.7: ${stats.ranges['0.7']} - ${stats.ranges['0.7'] * 0.7}
+0.5: ${stats.ranges['0.5']} - ${stats.ranges['0.5'] * 0.5}
+0.4: ${stats.ranges['0.4']} - ${stats.ranges['0.4'] * 0.4}
+0.3: ${stats.ranges['0.3']} - ${stats.ranges['0.3'] * 0.3}
+0.2: ${stats.ranges['0.2']} - ${stats.ranges['0.2'] * 0.2}
+0.1: ${stats.ranges['0.1']} - ${stats.ranges['0.1'] * 0.1}
+Total: ${total}`;
+        let info = document.getElementById('build_info');
+        info.innerHTML = '<pre>'+results+'</pre>';
     });
 }
 
