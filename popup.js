@@ -124,11 +124,21 @@ function soldItems(){
     chrome.runtime.sendMessage({action: "soldItems"}, function(response) {
         let info = document.getElementById('build_info');
         let stats = '';
+        let total = 0;
+        let count = 0;
         response.soldCounts.forEach((item)=>{
             stats += `${item.count} x ${item.name} - ${item.bricks} Bricks
 `
+            total+=parseFloat(item.bricks);
+            count+=item.count;
         })
+
+        let bricksPercent = (total / response.total).toFixed(3) + '%';
         info.innerHTML = `<pre>Sales Stats: 
+Buildings: ${response.count} Bricks: ${response.total} Return: ${bricksPercent}
+
+Total: ${count} Items for ${total.toFixed(1)} Bricks
+
 ${stats}</pre>`;
         // setTimeout(()=>{
         //     info.innerHTML = '';
@@ -181,17 +191,18 @@ Items: ${stats.items.count}
   Defense: ${stats.items.defense}
   
 Explorers:
-3.0: ${(stats.ranges['3.0'].count)} - ${(stats.ranges['3.0'].count * 3).toFixed(1)} - ${(stats.ranges['3.0'].total / stats.ranges['3.0'].count).toFixed(1)}
-2.0: ${(stats.ranges['2.0'].count)} - ${(stats.ranges['2.0'].count * 2).toFixed(1)} - ${(stats.ranges['2.0'].total / stats.ranges['2.0'].count).toFixed(1)}
-1.5: ${(stats.ranges['1.5'].count)} - ${(stats.ranges['1.5'].count * 1.5).toFixed(1)} - ${(stats.ranges['1.5'].total / stats.ranges['1.5'].count).toFixed(1)}
-1.0: ${(stats.ranges['1.0'].count)} - ${(stats.ranges['1.0'].count * 1).toFixed(1)} - ${(stats.ranges['1.0'].total / stats.ranges['1.0'].count).toFixed(1)}
-0.7: ${(stats.ranges['0.7'].count)} - ${(stats.ranges['0.7'].count * 0.7).toFixed(1)} - ${(stats.ranges['0.7'].total / stats.ranges['0.7'].count).toFixed(1)}
-0.5: ${(stats.ranges['0.5'].count)} - ${(stats.ranges['0.5'].count * 0.5).toFixed(1)} - ${(stats.ranges['0.5'].total / stats.ranges['0.5'].count).toFixed(1)}
-0.4: ${(stats.ranges['0.4'].count)} - ${(stats.ranges['0.4'].count * 0.4).toFixed(1)} - ${(stats.ranges['0.4'].total / stats.ranges['0.4'].count).toFixed(1)}
-0.3: ${(stats.ranges['0.3'].count)} - ${(stats.ranges['0.3'].count * 0.3).toFixed(1)} - ${(stats.ranges['0.3'].total / stats.ranges['0.3'].count).toFixed(1)}
-0.2: ${(stats.ranges['0.2'].count)} - ${(stats.ranges['0.2'].count * 0.2).toFixed(1)} - ${(stats.ranges['0.2'].total / stats.ranges['0.2'].count).toFixed(1)}
-0.1: ${(stats.ranges['0.1'].count)} - ${(stats.ranges['0.1'].count * 0.1).toFixed(1)} - ${(stats.ranges['0.1'].total / stats.ranges['0.1'].count).toFixed(1)}
-Total: ${total}`;
+Range: # - Bricks - Avg Def
+3.0: ${(stats.ranges['3.0'].count)} - ${(stats.ranges['3.0'].count * 3).toFixed(1)} - ${stats.ranges['3.0'].count ? (stats.ranges['3.0'].total / stats.ranges['3.0'].count).toFixed(1) : 0}
+2.0: ${(stats.ranges['2.0'].count)} - ${(stats.ranges['2.0'].count * 2).toFixed(1)} - ${stats.ranges['2.0'].count ? (stats.ranges['2.0'].total / stats.ranges['2.0'].count).toFixed(1) : 0}
+1.5: ${(stats.ranges['1.5'].count)} - ${(stats.ranges['1.5'].count * 1.5).toFixed(1)} - ${stats.ranges['1.5'].count ? (stats.ranges['1.5'].total / stats.ranges['1.5'].count).toFixed(1) : 0}
+1.0: ${(stats.ranges['1.0'].count)} - ${(stats.ranges['1.0'].count * 1).toFixed(1)} - ${stats.ranges['1.0'].count ? (stats.ranges['1.0'].total / stats.ranges['1.0'].count).toFixed(1) : 0}
+0.7: ${(stats.ranges['0.7'].count)} - ${(stats.ranges['0.7'].count * 0.7).toFixed(1)} - ${stats.ranges['0.7'].count ? (stats.ranges['0.7'].total / stats.ranges['0.7'].count).toFixed(1) : 0}
+0.5: ${(stats.ranges['0.5'].count)} - ${(stats.ranges['0.5'].count * 0.5).toFixed(1)} - ${stats.ranges['0.5'].count ? (stats.ranges['0.5'].total / stats.ranges['0.5'].count).toFixed(1) : 0}
+0.4: ${(stats.ranges['0.4'].count)} - ${(stats.ranges['0.4'].count * 0.4).toFixed(1)} - ${stats.ranges['0.4'].count ? (stats.ranges['0.4'].total / stats.ranges['0.4'].count).toFixed(1) : 0}
+0.3: ${(stats.ranges['0.3'].count)} - ${(stats.ranges['0.3'].count * 0.3).toFixed(1)} - ${stats.ranges['0.3'].count ? (stats.ranges['0.3'].total / stats.ranges['0.3'].count).toFixed(1) : 0}
+0.2: ${(stats.ranges['0.2'].count)} - ${(stats.ranges['0.2'].count * 0.2).toFixed(1)} - ${stats.ranges['0.2'].count ? (stats.ranges['0.2'].total / stats.ranges['0.2'].count).toFixed(1) : 0}
+0.1: ${(stats.ranges['0.1'].count)} - ${(stats.ranges['0.1'].count * 0.1).toFixed(1)} - ${stats.ranges['0.1'].count ? (stats.ranges['0.1'].total / stats.ranges['0.1'].count).toFixed(1) : 0}
+Total: ${total.toFixed(1)}`;
         let info = document.getElementById('build_info');
         info.innerHTML = '<pre>'+results+'</pre>';
     });

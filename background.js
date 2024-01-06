@@ -44,9 +44,9 @@ chrome.runtime.onMessage.addListener(
       console.log("Message received in background script");
       chrome.storage.local.get("version",async function(res) {
         console.log("Message received in background script with version:", res);
-        let soldCounts = await getSoldCounts(res.version);
+        let data = await getSoldCounts(res.version);
 
-        sendResponse({soldCounts: soldCounts});
+        sendResponse({soldCounts: data.soldItems, total: data.total, count: data.count});
       });
     }  else if (request.action === "getBuildableItems"){
       console.log('getBuildableItems');
@@ -660,5 +660,49 @@ async function getSoldCounts(version){
     });
   })
 
-  return soldItems;
+  // Get buildings cost
+  let total = 0;
+  let count = 0;
+
+  let res1 = await fetch("https://liquidlands.io/controller", {
+    "headers": {
+      "accept": "application/json, text/javascript, */*; q=0.01",
+      "content-type": "application/json; charset=UTF-8",
+    },
+    "body": "{\"controller\":\"Blueprints.Cards\",\"fields\":{\"app_version\":\"30080a1a1\"},\"nonce\":1704567503962,\"debug\":true}",
+    "method": "POST"
+  });
+  let blueprints = await res1.json();
+  blueprints = blueprints.d.cards;
+  let res = await fetch("https://liquidlands.io/controller", {
+    "headers": {
+      "accept": "application/json, text/javascript, */*; q=0.01",
+      "content-type": "application/json; charset=UTF-8",
+    },
+    "body": "{\"controller\":\"Cities.Cards\",\"fields\":{\"filter\":\">production\",\"own\":true,\"pinned\":false,\"below_id\":0,\"max\":200,\"app_version\":\""+version+"\"},\"nonce\":"+Date.now()+",\"debug\":true}",
+    "method": "POST"
+  });
+  let json = await res.json();
+  let cards = json.d.cards;
+  for(let i=0; i<cards.length; i++){
+    let card = cards[i];
+    let res2 = await fetch("https://liquidlands.io/controller", {
+      "headers": {
+        "accept": "application/json, text/javascript, */*; q=0.01",
+        "content-type": "application/json; charset=UTF-8",
+      },
+      "body": "{\"controller\":\"Cities.Card\",\"fields\":{\"id\":6248,\"app_version\":\"30080a1a1\"},\"nonce\":1704567365148,\"debug\":true}",
+      "method": "POST"
+    });
+    let json2 = await res2.json();
+
+    let buildings = json2.d.card_buildings;
+
+    buildings.forEach((building)=>{
+      let card = blueprints.find((blueprint)=>blueprint.id == building.blueprint_id);
+      total+= card.difficulty;
+      count++;
+    });
+  }
+  return {soldItems, total, count};
 }
