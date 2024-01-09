@@ -230,8 +230,11 @@ function buildItemExt(itemName, items, citiesStr){
                     <div id="harvestBtn" style="display: inline-block;float: left;width: 80px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
                         Harvest
                     </div>
+                    <div id="hideAll" style="display: inline-block;float: left;width: 90px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
+                        Hide
+                    </div>
                     <div id="expandAll" style="display: inline-block;float: left;width: 90px;padding: 4px;font-weight: bold;text-align: center;color: #000;cursor: pointer;background-color: #dbdbdb;margin-left: 6px;">
-                        Show Att
+                        Expand
                     </div>
                     <div style="display: inline-block;float: left;color: #FFF;margin-top: 4px;font-weight: bold;text-align: center;margin-left: 6px;">
                         Quantity: <input style="background-color: #FFF;width: 30px;" id="quantity" type="number" value="${quantity}">
@@ -259,6 +262,9 @@ function buildItemExt(itemName, items, citiesStr){
             });
             document.getElementById('harvestBtn').addEventListener("click", ()=>{
                 harvestAll();
+            });
+            document.getElementById('hideAll').addEventListener("click", ()=>{
+                hideAll();
             });
             document.getElementById('expandAll').addEventListener("click", ()=>{
                 expandAll();
@@ -323,6 +329,20 @@ async function harvestAll(){
 }
 
 async function expandAll(){
+    let elm = {};
+    while(elm){
+        let elms = Array.from(document.getElementsByClassName('addon_more'));
+        if(elms.length > 0){
+            elm = elms[0];
+            elm.click();
+        } else {
+            elm = null;
+        }
+        await sleep(250);
+    }
+    console.log('Done expanding')
+}
+async function hideAll(){
     let elm = {};
     while(elm){
         let elms = Array.from(document.getElementsByClassName('addon_more'));
